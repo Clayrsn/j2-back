@@ -1,19 +1,29 @@
 package main
 
 import (
-	"j2-api/configs"
+	"os"
+
 	"j2-api/controllers"
+	"j2-api/middlewares"
 
 	"github.com/go-fuego/fuego"
 )
 
 func main() {
-	configs.ConnectDB()
+	client, err := middlewares.InitializeFirebaseApp(os.Getenv("FIREBASE_CONFIG_PATH"))
+	if err != nil {
+		panic(err)
+	}
+
 	s := fuego.NewServer()
+	api := fuego.Group(s, "/api")
 
-	controllers.IngredientsResources{}.Routes(s)
+	fuego.Use(api, middlewares.MiddlewareResources{}.FirebaseAuthMiddleware(client))
 
-	err := s.Run()
+	controllers.IngredientsResources{}.Routes(api)
+	controllers.RecipesResources{}.Routes(api)
+
+	err = s.Run()
 	if err != nil {
 		panic(err)
 	}

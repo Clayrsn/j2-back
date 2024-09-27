@@ -25,4 +25,7 @@ go.work.sum
 .env
 
 # goland idea
-.idea
+.idea/
+
+# secrets
+secrets/

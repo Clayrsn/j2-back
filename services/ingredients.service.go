@@ -101,15 +101,14 @@ func UpdateIngredient(id string, ingredientsUpdate models.IngredientUpdate) (mod
 
 func DeleteIngredient(id string) (any, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	var ingredient models.Ingredient
 	defer cancel()
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return ingredient, err
+		return nil, err
 	}
 
 	_, err = ingredientsCollection.DeleteOne(ctx, bson.M{"_id": objID})
 
-	return ingredient, err
+	return true, err
 }

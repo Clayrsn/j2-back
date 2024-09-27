@@ -87,7 +87,7 @@ func UpdateRecipe(id string, recipeUpdate models.RecipeUpdate) (models.Recipe, e
 	recipe.UpdatedAt = time.Now()
 
 	filter := bson.M{"_id": id}
-	update := bson.M{"$set": recipeUpdate}
+	update := bson.M{"$set": recipe}
 
 	_, err = recipesCollection.UpdateOne(ctx, filter, update)
 
@@ -96,15 +96,14 @@ func UpdateRecipe(id string, recipeUpdate models.RecipeUpdate) (models.Recipe, e
 
 func DeleteRecipe(id string) (any, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	var recipe models.Recipe
 	defer cancel()
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return recipe, err
+		return nil, err
 	}
 
 	_, err = recipesCollection.DeleteOne(ctx, bson.M{"_id": objID})
 
-	return recipe, err
+	return true, err
 }
