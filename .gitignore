@@ -27,5 +27,6 @@ go.work.sum
 # goland idea
 .idea/
 
-# secrets
+# app folders
 secrets/
+doc/
